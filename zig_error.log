@@ -1,0 +1,50 @@
+Segmentation fault at address 0x7ff1b0f29000
+/snap/zig/7587/lib/std/mem.zig:1418:12: 0x2385c9 in readIntNative__anon_7027 (main)
+    return @ptrCast(*align(1) const T, bytes).*;
+           ^
+/snap/zig/7587/lib/std/hash/wyhash.zig:14:29: 0x26228a in read_bytes__anon_9249 (main)
+    return mem.readIntLittle(T, data[0..bytes]);
+                            ^
+/snap/zig/7587/lib/std/hash/wyhash.zig:83:33: 0x25b93d in hash (main)
+            1 => mix0(read_bytes(1, rem_key), primes[4], seed),
+                                ^
+/snap/zig/7587/lib/std/hash/wyhash.zig:171:36: 0x2550f4 in hash (main)
+        return WyhashStateless.hash(seed, input);
+                                   ^
+/snap/zig/7587/lib/std/hash_map.zig:92:32: 0x2545f1 in hashString (main)
+    return std.hash.Wyhash.hash(0, s);
+                               ^
+/snap/zig/7587/lib/std/hash_map.zig:79:26: 0x24d300 in hash (main)
+        return hashString(s);
+                         ^
+/snap/zig/7587/lib/std/hash_map.zig:1034:34: 0x25aa44 in putAssumeCapacityNoClobberContext (main)
+            const hash = ctx.hash(key);
+                                 ^
+/snap/zig/7587/lib/std/hash_map.zig:1527:62: 0x254532 in grow (main)
+                        map.putAssumeCapacityNoClobberContext(keys_ptr[i], values_ptr[i], ctx);
+                                                             ^
+/snap/zig/7587/lib/std/hash_map.zig:1465:30: 0x24d2b5 in growIfNeeded (main)
+                try self.grow(allocator, capacityForSize(self.load() + new_count), ctx);
+                             ^
+/snap/zig/7587/lib/std/hash_map.zig:1287:30: 0x24231c in getOrPutContextAdapted__anon_7475 (main)
+            self.growIfNeeded(allocator, 1, ctx) catch |err| {
+                             ^
+/snap/zig/7587/lib/std/hash_map.zig:1275:56: 0x23622d in getOrPutContext (main)
+            const gop = try self.getOrPutContextAdapted(allocator, key, ctx, ctx);
+                                                       ^
+/snap/zig/7587/lib/std/hash_map.zig:1201:52: 0x2132ec in putContext (main)
+            const result = try self.getOrPutContext(allocator, key, ctx);
+                                                   ^
+/snap/zig/7587/lib/std/hash_map.zig:540:45: 0x2100e3 in put (main)
+            return self.unmanaged.putContext(self.allocator, key, value, self.ctx);
+                                            ^
+/home/n-honda.linux/zig/zig_shm-grow-noclobber-RTE-repro/src/main.zig:15:20: 0x20fa93 in main (main)
+        try map.put(key, 0);
+                   ^
+/snap/zig/7587/lib/std/start.zig:609:37: 0x20f73e in posixCallMainAndExit (main)
+            const result = root.main() catch |err| {
+                                    ^
+/snap/zig/7587/lib/std/start.zig:368:5: 0x20f1a1 in _start (main)
+    @call(.never_inline, posixCallMainAndExit, .{});
+    ^
+[1]    30997 IOT instruction (core dumped)  zig run src/main.zig

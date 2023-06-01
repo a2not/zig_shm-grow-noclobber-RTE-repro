@@ -1,24 +1,19 @@
 const std = @import("std");
+const ArrayList = std.ArrayList;
 
 pub fn main() !void {
-    // Prints to stderr (it's a shortcut based on `std.io.getStdErr()`)
-    std.debug.print("All your {s} are belong to us.\n", .{"codebase"});
+    var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+    defer std.testing.expect(gpa.deinit() == .ok) catch @panic("leak");
+    const allocator = gpa.allocator();
 
-    // stdout is for the actual output of your application, for example if you
-    // are implementing gzip, then only the compressed bytes should be sent to
-    // stdout, not any debugging messages.
-    const stdout_file = std.io.getStdOut().writer();
-    var bw = std.io.bufferedWriter(stdout_file);
-    const stdout = bw.writer();
+    var map = std.StringHashMap(u32).init(allocator);
+    defer map.deinit();
 
-    try stdout.print("Run `zig build test` to run the tests.\n", .{});
+    for (0..10000) |i| {
+        const key = try std.fmt.allocPrint(allocator, "{}", .{i});
+        defer allocator.free(key);
+        try map.put(key, 0);
+    }
 
-    try bw.flush(); // don't forget to flush!
-}
-
-test "simple test" {
-    var list = std.ArrayList(i32).init(std.testing.allocator);
-    defer list.deinit(); // try commenting this out and see if zig detects the memory leak!
-    try list.append(42);
-    try std.testing.expectEqual(@as(i32, 42), list.pop());
+    std.debug.print("{any}\n", .{map});
 }
